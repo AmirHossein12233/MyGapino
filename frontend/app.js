@@ -11,13 +11,17 @@ const $ = (id) => document.getElementById(id);
 // =========================
 
 async function apiRequest(url, options = {}) {
-    const response = await fetch(API_URL + url, {
-        ...options,
-        headers: {
-            "Content-Type": "application/json",
-            ...(options.headers || {})
+
+    const response = await fetch(
+        API_URL + url,
+        {
+            ...options,
+            headers: {
+                "Content-Type": "application/json",
+                ...(options.headers || {})
+            }
         }
-    });
+    );
 
     if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
@@ -35,44 +39,74 @@ async function loadServer() {
 
     try {
 
-        const data = await apiRequest("/api/server");
+        const data =
+            await apiRequest("/api/server");
+
+
+        // نام سرور
 
         if ($("serverName")) {
+
             $("serverName").textContent =
-                data.name || "MyGapino My Summer Car";
+                data.name ||
+                "MyGapino My Summer Car";
         }
 
+
+        // IP
+
         if ($("serverIP")) {
+
             $("serverIP").textContent =
                 data.ip || "-";
         }
 
+
+        // Port
+
         if ($("serverPort")) {
+
             $("serverPort").textContent =
                 data.port || "-";
         }
 
+
+        // Players
+
         if ($("playerCount")) {
+
             $("playerCount").textContent =
                 data.players ?? 0;
         }
 
+
+        // Max players
+
         if ($("maxPlayers")) {
+
             $("maxPlayers").textContent =
                 data.max_players ?? 32;
         }
 
 
-        // =========================
-        // Real server status
-        // =========================
+        // وضعیت واقعی سرور
 
         const online =
             data.status === "online";
 
+
         if ($("serverStatus")) {
 
             $("serverStatus").textContent =
+                online
+                    ? "آنلاین"
+                    : "آفلاین";
+        }
+
+
+        if ($("serverStatusText")) {
+
+            $("serverStatusText").textContent =
                 online
                     ? "آنلاین"
                     : "آفلاین";
@@ -85,30 +119,43 @@ async function loadServer() {
                 online
                     ? "ONLINE"
                     : "OFFLINE";
-        }
 
-
-        // تغییر ظاهر وضعیت
-        const statusElements = [
-            $("serverStatus"),
-            $("serverBadge")
-        ];
-
-        statusElements.forEach((element) => {
-
-            if (!element) return;
-
-            element.classList.remove(
+            $("serverBadge").classList.remove(
                 "online",
                 "offline"
             );
 
-            element.classList.add(
+            $("serverBadge").classList.add(
                 online
                     ? "online"
                     : "offline"
             );
-        });
+        }
+
+
+        // وضعیت دکمه ورود
+
+        const joinButton =
+            $("joinGameButton");
+
+        if (joinButton) {
+
+            if (online) {
+
+                joinButton.disabled = false;
+
+                joinButton.textContent =
+                    "ورود به بازی";
+
+            } else {
+
+                joinButton.disabled = true;
+
+                joinButton.textContent =
+                    "سرور آفلاین است";
+            }
+        }
+
 
     } catch (error) {
 
@@ -117,14 +164,34 @@ async function loadServer() {
             error
         );
 
+
         if ($("serverStatus")) {
+
             $("serverStatus").textContent =
                 "خطا در اتصال";
         }
 
+
+        if ($("serverStatusText")) {
+
+            $("serverStatusText").textContent =
+                "خطا در اتصال";
+        }
+
+
         if ($("serverBadge")) {
+
             $("serverBadge").textContent =
                 "ERROR";
+
+            $("serverBadge").classList.remove(
+                "online",
+                "offline"
+            );
+
+            $("serverBadge").classList.add(
+                "offline"
+            );
         }
     }
 }
@@ -141,10 +208,18 @@ async function loadPlayers() {
         const data =
             await apiRequest("/api/players");
 
+
         if ($("playerCount")) {
 
             $("playerCount").textContent =
                 data.count ?? 0;
+        }
+
+
+        if ($("playersBadge")) {
+
+            $("playersBadge").textContent =
+                `${data.count ?? 0} بازیکن`;
         }
 
 
@@ -156,21 +231,30 @@ async function loadPlayers() {
         $("playersList").innerHTML = "";
 
 
-        if (!data.players || data.players.length === 0) {
+        if (
+            !data.players ||
+            data.players.length === 0
+        ) {
 
             const empty =
                 document.createElement("div");
 
-            empty.className = "player-empty";
+            empty.className =
+                "player-empty";
 
             empty.textContent =
                 "فعلاً بازیکنی آنلاین نیست.";
 
-            $("playersList").appendChild(empty);
+            $("playersList").appendChild(
+                empty
+            );
 
-        } else {
+            return;
+        }
 
-            data.players.forEach((player) => {
+
+        data.players.forEach(
+            (player) => {
 
                 const item =
                     document.createElement("div");
@@ -200,18 +284,15 @@ async function loadPlayers() {
 
 
                 item.appendChild(name);
+
                 item.appendChild(status);
 
-                $("playersList").appendChild(item);
-            });
-        }
+                $("playersList").appendChild(
+                    item
+                );
+            }
+        );
 
-
-        if ($("playersBadge")) {
-
-            $("playersBadge").textContent =
-                `${data.count ?? 0} بازیکن`;
-        }
 
     } catch (error) {
 
@@ -229,11 +310,18 @@ async function loadPlayers() {
 
 function openLoginModal() {
 
-    if (!$("loginModal")) return;
+    const modal =
+        $("loginModal");
 
-    $("loginModal").classList.add("show");
+    if (!modal) {
+        return;
+    }
+
+    modal.classList.add("show");
+
 
     if ($("usernameInput")) {
+
         $("usernameInput").focus();
     }
 }
@@ -241,9 +329,14 @@ function openLoginModal() {
 
 function closeLoginModal() {
 
-    if (!$("loginModal")) return;
+    const modal =
+        $("loginModal");
 
-    $("loginModal").classList.remove("show");
+    if (!modal) {
+        return;
+    }
+
+    modal.classList.remove("show");
 }
 
 
@@ -259,7 +352,11 @@ async function login() {
     const message =
         $("loginMessage");
 
-    if (!input) return;
+
+    if (!input) {
+        return;
+    }
+
 
     const username =
         input.value.trim();
@@ -268,6 +365,7 @@ async function login() {
     if (!username) {
 
         if (message) {
+
             message.textContent =
                 "نام کاربری را وارد کنید.";
         }
@@ -277,6 +375,7 @@ async function login() {
 
 
     if (message) {
+
         message.textContent =
             "در حال ورود...";
     }
@@ -289,8 +388,9 @@ async function login() {
                 "/api/login",
                 {
                     method: "POST",
+
                     body: JSON.stringify({
-                        username
+                        username: username
                     })
                 }
             );
@@ -299,6 +399,7 @@ async function login() {
         if (!data.success) {
 
             if (message) {
+
                 message.textContent =
                     data.message ||
                     "ورود انجام نشد.";
@@ -311,6 +412,7 @@ async function login() {
         currentUsername =
             data.username;
 
+
         localStorage.setItem(
             "mygapino_username",
             currentUsername
@@ -318,6 +420,7 @@ async function login() {
 
 
         if (message) {
+
             message.textContent =
                 "ورود موفق بود.";
         }
@@ -325,15 +428,19 @@ async function login() {
 
         closeLoginModal();
 
+
         await sendHeartbeat();
 
         await loadPlayers();
+
 
     } catch (error) {
 
         console.error(error);
 
+
         if (message) {
+
             message.textContent =
                 "خطا در اتصال به سرور.";
         }
@@ -351,12 +458,14 @@ async function sendHeartbeat() {
         return;
     }
 
+
     try {
 
         await apiRequest(
             "/api/heartbeat",
             {
                 method: "POST",
+
                 body: JSON.stringify({
                     username:
                         currentUsername
@@ -364,7 +473,9 @@ async function sendHeartbeat() {
             }
         );
 
+
         await loadPlayers();
+
 
     } catch (error) {
 
@@ -386,12 +497,14 @@ async function logout() {
         return;
     }
 
+
     try {
 
         await apiRequest(
             "/api/logout",
             {
                 method: "POST",
+
                 body: JSON.stringify({
                     username:
                         currentUsername
@@ -411,7 +524,78 @@ async function logout() {
         "mygapino_username"
     );
 
+
     await loadPlayers();
+}
+
+
+// =========================
+// Join Game
+// =========================
+
+async function joinGame() {
+
+    try {
+
+        const data =
+            await apiRequest(
+                "/api/server"
+            );
+
+
+        if (data.status !== "online") {
+
+            alert(
+                "سرور بازی در حال حاضر آفلاین است."
+            );
+
+            return;
+        }
+
+
+        if (!currentUsername) {
+
+            openLoginModal();
+
+            return;
+        }
+
+
+        await sendHeartbeat();
+
+
+        /*
+         * فعلاً پروتکل اتصال مستقیم
+         * به بازی را نداریم.
+         *
+         * بنابراین فعلاً اطلاعات اتصال
+         * سرور را نمایش می‌دهیم.
+         */
+
+        const address =
+            `${data.ip}:${data.port}`;
+
+
+        alert(
+            `ورود به سرور آماده است.\n\n` +
+            `نام کاربری: ${currentUsername}\n` +
+            `سرور: ${data.name}\n` +
+            `آدرس: ${address}`
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Join game failed:",
+            error
+        );
+
+
+        alert(
+            "اتصال به سرور انجام نشد."
+        );
+    }
 }
 
 
@@ -436,10 +620,14 @@ document.addEventListener(
     "DOMContentLoaded",
     () => {
 
+
+        // Header Login
+
         const loginButton =
             $("loginButton");
 
         if (loginButton) {
+
             loginButton.addEventListener(
                 "click",
                 openLoginModal
@@ -447,10 +635,27 @@ document.addEventListener(
         }
 
 
+        // Hero Login
+
+        const loginButtonHero =
+            $("loginButtonHero");
+
+        if (loginButtonHero) {
+
+            loginButtonHero.addEventListener(
+                "click",
+                openLoginModal
+            );
+        }
+
+
+        // Close Modal
+
         const closeButton =
             $("closeModal");
 
         if (closeButton) {
+
             closeButton.addEventListener(
                 "click",
                 closeLoginModal
@@ -458,10 +663,13 @@ document.addEventListener(
         }
 
 
+        // Submit Login
+
         const submitButton =
             $("submitLogin");
 
         if (submitButton) {
+
             submitButton.addEventListener(
                 "click",
                 login
@@ -469,16 +677,49 @@ document.addEventListener(
         }
 
 
+        // Server Join
+
+        const joinButton =
+            $("joinGameButton");
+
+        if (joinButton) {
+
+            joinButton.addEventListener(
+                "click",
+                joinGame
+            );
+        }
+
+
+        // Server Refresh
+
         const refreshButton =
             $("refreshButton");
 
         if (refreshButton) {
+
             refreshButton.addEventListener(
                 "click",
                 refreshAll
             );
         }
 
+
+        // Hero Refresh
+
+        const refreshButtonHero =
+            $("refreshButtonHero");
+
+        if (refreshButtonHero) {
+
+            refreshButtonHero.addEventListener(
+                "click",
+                refreshAll
+            );
+        }
+
+
+        // Username input
 
         const input =
             $("usernameInput");
@@ -490,16 +731,21 @@ document.addEventListener(
                 (event) => {
 
                     if (event.key === "Enter") {
+
                         login();
                     }
 
+
                     if (event.key === "Escape") {
+
                         closeLoginModal();
                     }
                 }
             );
         }
 
+
+        // Close modal by clicking outside
 
         const modal =
             $("loginModal");
@@ -511,6 +757,7 @@ document.addEventListener(
                 (event) => {
 
                     if (event.target === modal) {
+
                         closeLoginModal();
                     }
                 }
@@ -518,28 +765,32 @@ document.addEventListener(
         }
 
 
-        // بارگذاری اولیه
+        // Initial load
+
         refreshAll();
 
 
-        // بررسی وضعیت سرور هر 10 ثانیه
+        // Server status every 10 seconds
+
         setInterval(
             loadServer,
             10000
         );
 
 
-        // Heartbeat هر 10 ثانیه
+        // Heartbeat every 10 seconds
+
         setInterval(
             sendHeartbeat,
             10000
         );
+
     }
 );
 
 
 // =========================
-// خروج هنگام بستن صفحه
+// Page close
 // =========================
 
 window.addEventListener(
@@ -549,6 +800,7 @@ window.addEventListener(
         if (!currentUsername) {
             return;
         }
+
 
         const blob =
             new Blob(
@@ -563,6 +815,7 @@ window.addEventListener(
                         "application/json"
                 }
             );
+
 
         navigator.sendBeacon(
             "/api/logout",

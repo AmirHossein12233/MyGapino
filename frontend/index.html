@@ -2,7 +2,6 @@
 <html lang="fa" dir="rtl">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta
@@ -11,13 +10,13 @@
     >
 
     <meta
-        name="description"
-        content="MyGapino - My Summer Car Online"
+        name="theme-color"
+        content="#0b0f19"
     >
 
     <meta
-        name="theme-color"
-        content="#080a0f"
+        name="description"
+        content="MyGapino - My Summer Car Online"
     >
 
     <title>
@@ -28,104 +27,103 @@
         rel="stylesheet"
         href="/static/style.css"
     >
-
 </head>
 
 
 <body>
 
     <!-- =========================
-         Background
-    ========================== -->
-
-    <div class="background"></div>
-
-
-    <!-- =========================
          Header
     ========================== -->
 
-    <header class="topbar">
+    <header class="site-header">
 
-        <div class="logo">
+        <div class="container header-inner">
 
-            <span class="logo-main">
-                MYGAPINO
-            </span>
+            <a
+                href="/"
+                class="logo"
+            >
+                <span class="logo-main">
+                    MYGAPINO
+                </span>
 
-            <span class="logo-sub">
-                MY SUMMER CAR ONLINE
-            </span>
+                <span class="logo-sub">
+                    MY SUMMER CAR ONLINE
+                </span>
+            </a>
 
-        </div>
 
+            <div class="header-actions">
 
-        <div class="server-status">
+                <button
+                    id="loginButton"
+                    class="header-login-button"
+                    type="button"
+                >
+                    ورود
+                </button>
 
-            <span
-                id="statusDot"
-                class="status-dot offline"
-            ></span>
-
-            <span id="statusText">
-                در حال بررسی سرور...
-            </span>
+            </div>
 
         </div>
 
     </header>
 
 
+
     <!-- =========================
          Main
     ========================== -->
 
-    <main class="container">
+    <main>
 
-
-        <!-- =====================
-             Hero
-        ====================== -->
+        <!-- Hero -->
 
         <section class="hero">
 
-            <div class="hero-content">
+            <div class="container">
 
-                <div class="small-title">
-                    MY SUMMER CAR ONLINE
-                </div>
+                <div class="hero-content">
 
-
-                <h1>
-                    به MyGapino خوش آمدید
-                </h1>
+                    <div class="hero-badge">
+                        MY SUMMER CAR ONLINE
+                    </div>
 
 
-                <p>
-                    وارد لانچر شوید و به
-                    سرور My Summer Car
-                    متصل شوید.
-                </p>
+                    <h1>
+                        به
+                        <span>MyGapino</span>
+                        خوش آمدید
+                    </h1>
 
 
-                <div class="hero-buttons">
-
-                    <button
-                        id="loginButton"
-                        class="primary-button"
-                        type="button"
-                    >
-                        ورود به لانچر
-                    </button>
+                    <p>
+                        وارد دنیای آنلاین My Summer Car شوید،
+                        وضعیت سرور را ببینید و بازیکنان آنلاین را مشاهده کنید.
+                    </p>
 
 
-                    <button
-                        id="refreshButton"
-                        class="secondary-button"
-                        type="button"
-                    >
-                        بروزرسانی وضعیت
-                    </button>
+                    <div class="hero-actions">
+
+                        <button
+                            id="loginButtonHero"
+                            class="primary-button"
+                            type="button"
+                        >
+                            ورود به MyGapino
+                        </button>
+
+
+                        <button
+                            id="refreshButtonHero"
+                            class="secondary-button"
+                            type="button"
+                        >
+                            بروزرسانی سرور
+                        </button>
+
+                    </div>
 
                 </div>
 
@@ -134,128 +132,183 @@
         </section>
 
 
-        <!-- =====================
-             Server Card
-        ====================== -->
 
-        <section class="server-card">
+        <!-- =========================
+             Server Section
+        ========================== -->
 
-            <div class="card-header">
+        <section class="server-section">
 
-                <div>
+            <div class="container">
 
-                    <span class="card-label">
-                        SERVER
+                <div class="section-title">
+
+                    <span>
+                        وضعیت سرور
                     </span>
 
-                    <h2 id="serverName">
-                        MyGapino My Summer Car
+                    <h2>
+                        My Summer Car Online
                     </h2>
 
                 </div>
 
 
-                <div
-                    id="serverBadge"
-                    class="server-badge offline"
-                >
-                    OFFLINE
+
+                <!-- Server Card -->
+
+                <div class="server-card">
+
+
+                    <!-- Server Header -->
+
+                    <div class="server-card-header">
+
+                        <div class="server-title">
+
+                            <h2 id="serverName">
+                                MyGapino My Summer Car
+                            </h2>
+
+
+                            <span
+                                id="serverBadge"
+                                class="server-badge online"
+                            >
+                                ONLINE
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            id="serverStatus"
+                            class="server-status"
+                        >
+                            در حال بررسی...
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Server Information -->
+
+                    <div class="server-info">
+
+
+                        <div class="server-info-item">
+
+                            <span>
+                                وضعیت
+                            </span>
+
+                            <strong id="serverStatusText">
+                                در حال بررسی...
+                            </strong>
+
+                        </div>
+
+
+
+                        <div class="server-info-item">
+
+                            <span>
+                                بازیکنان
+                            </span>
+
+                            <strong>
+
+                                <span id="playerCount">
+                                    0
+                                </span>
+
+                                /
+
+                                <span id="maxPlayers">
+                                    32
+                                </span>
+
+                            </strong>
+
+                        </div>
+
+
+
+                        <div class="server-info-item">
+
+                            <span>
+                                آدرس
+                            </span>
+
+                            <strong id="serverIP">
+                                -
+                            </strong>
+
+                        </div>
+
+
+
+                        <div class="server-info-item">
+
+                            <span>
+                                پورت
+                            </span>
+
+                            <strong id="serverPort">
+                                -
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Server Actions -->
+
+                    <div class="server-actions">
+
+                        <button
+                            id="joinGameButton"
+                            class="primary-button"
+                            type="button"
+                        >
+                            ورود به بازی
+                        </button>
+
+
+                        <button
+                            id="refreshButton"
+                            class="secondary-button"
+                            type="button"
+                        >
+                            بروزرسانی
+                        </button>
+
+                    </div>
+
+
                 </div>
-
-            </div>
-
-
-            <div class="server-info">
-
-
-                <!-- Status -->
-
-                <div class="info-box">
-
-                    <span class="info-title">
-                        وضعیت
-                    </span>
-
-                    <strong id="serverStatus">
-                        در حال بررسی...
-                    </strong>
-
-                </div>
-
-
-                <!-- Players -->
-
-                <div class="info-box">
-
-                    <span class="info-title">
-                        بازیکنان
-                    </span>
-
-                    <strong>
-
-                        <span id="playerCount">
-                            0
-                        </span>
-
-                        /
-
-                        <span id="maxPlayers">
-                            32
-                        </span>
-
-                    </strong>
-
-                </div>
-
-
-                <!-- IP -->
-
-                <div class="info-box">
-
-                    <span class="info-title">
-                        IP
-                    </span>
-
-                    <strong id="serverIP">
-                        -
-                    </strong>
-
-                </div>
-
-
-                <!-- Port -->
-
-                <div class="info-box">
-
-                    <span class="info-title">
-                        Port
-                    </span>
-
-                    <strong id="serverPort">
-                        -
-                    </strong>
-
-                </div>
-
 
             </div>
 
         </section>
 
 
-        <!-- =====================
-             Players Card
-        ====================== -->
 
-        <section class="players-card">
+        <!-- =========================
+             Players Section
+        ========================== -->
 
+        <section class="players-section">
 
-            <div class="card-header">
+            <div class="container">
 
-                <div>
+                <div class="section-title">
 
-                    <span class="card-label">
-                        PLAYERS
+                    <span>
+                        بازیکنان
                     </span>
 
                     <h2>
@@ -265,37 +318,48 @@
                 </div>
 
 
-                <div class="player-count-badge">
 
-                    <span id="playersBadge">
-                        0
-                    </span>
+                <div class="players-card">
 
-                    بازیکن
+
+                    <div class="players-header">
+
+                        <h3>
+                            بازیکنان سرور
+                        </h3>
+
+
+                        <span
+                            id="playersBadge"
+                            class="players-badge"
+                        >
+                            0 بازیکن
+                        </span>
+
+                    </div>
+
+
+
+                    <div
+                        id="playersList"
+                        class="players-list"
+                    >
+
+                        <div class="player-empty">
+                            در حال دریافت اطلاعات...
+                        </div>
+
+                    </div>
+
 
                 </div>
 
             </div>
-
-
-            <div
-                id="playersList"
-                class="players-list"
-            >
-
-                <div class="empty-players">
-
-                    هنوز بازیکنی آنلاین نیست.
-
-                </div>
-
-            </div>
-
 
         </section>
 
-
     </main>
+
 
 
     <!-- =========================
@@ -304,17 +368,15 @@
 
     <div
         id="loginModal"
-        class="modal hidden"
+        class="modal"
     >
 
-        <div class="modal-box">
+        <div class="modal-content">
 
-
-            <!-- Close -->
 
             <button
                 id="closeModal"
-                class="close-button"
+                class="modal-close"
                 type="button"
                 aria-label="بستن"
             >
@@ -322,53 +384,59 @@
             </button>
 
 
-            <!-- Icon -->
+            <div class="modal-header">
 
-            <div class="modal-icon">
-                🎮
+                <div class="modal-logo">
+                    MYGAPINO
+                </div>
+
+                <h2>
+                    ورود به MyGapino
+                </h2>
+
+                <p>
+                    نام کاربری خود را وارد کنید.
+                </p>
+
             </div>
 
 
-            <h2>
-                ورود به MyGapino
-            </h2>
+
+            <div class="form-group">
+
+                <label
+                    for="usernameInput"
+                >
+                    نام کاربری
+                </label>
 
 
-            <p>
-                نام کاربری خود را وارد کنید.
-            </p>
+                <input
+                    id="usernameInput"
+                    type="text"
+                    maxlength="24"
+                    autocomplete="off"
+                    placeholder="مثلاً Amir_Hossein"
+                >
+
+            </div>
 
 
-            <!-- Username -->
-
-            <input
-                id="usernameInput"
-                type="text"
-                maxlength="24"
-                placeholder="نام کاربری"
-                autocomplete="off"
-                spellcheck="false"
-            >
-
-
-            <!-- Login -->
-
-            <button
-                id="submitLogin"
-                class="primary-button full"
-                type="button"
-            >
-                ورود
-            </button>
-
-
-            <!-- Message -->
 
             <div
                 id="loginMessage"
                 class="login-message"
-                role="alert"
             ></div>
+
+
+
+            <button
+                id="submitLogin"
+                class="primary-button modal-submit"
+                type="button"
+            >
+                ورود
+            </button>
 
 
         </div>
@@ -376,29 +444,51 @@
     </div>
 
 
+
     <!-- =========================
          Footer
     ========================== -->
 
-    <footer>
+    <footer class="site-footer">
 
-        <span>
-            © 2026 MyGapino
-        </span>
+        <div class="container">
+
+            <div class="footer-content">
+
+                <div>
+
+                    <strong>
+                        MYGAPINO
+                    </strong>
+
+                    <span>
+                        My Summer Car Online
+                    </span>
+
+                </div>
 
 
-        <span>
-            My Summer Car Online
-        </span>
+                <div>
+
+                    © 2026 MyGapino
+                </div>
+
+            </div>
+
+        </div>
 
     </footer>
+
 
 
     <!-- =========================
          JavaScript
     ========================== -->
 
-    <script src="/static/app.js"></script>
+    <script
+        src="/static/app.js"
+        defer
+    ></script>
 
 </body>
 
