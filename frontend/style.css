@@ -1,0 +1,722 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    background: #080a0f;
+    color: #f4f6f8;
+    font-family:
+        "Segoe UI",
+        Tahoma,
+        Arial,
+        sans-serif;
+    overflow-x: hidden;
+}
+
+/* -------------------------
+   Background
+------------------------- */
+
+.background {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+
+    background:
+        radial-gradient(
+            circle at 15% 20%,
+            rgba(255, 145, 0, 0.12),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 85% 70%,
+            rgba(0, 170, 255, 0.08),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #080a0f 0%,
+            #0d1118 50%,
+            #080a0f 100%
+        );
+}
+
+.background::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.015) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.015) 1px,
+            transparent 1px
+        );
+
+    background-size: 45px 45px;
+
+    mask-image:
+        linear-gradient(
+            to bottom,
+            black,
+            transparent
+        );
+}
+
+/* -------------------------
+   Topbar
+------------------------- */
+
+.topbar {
+    width: 100%;
+    min-height: 76px;
+
+    padding: 18px 6%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+
+    background: rgba(8, 10, 15, 0.78);
+
+    backdrop-filter: blur(15px);
+
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.logo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.logo-main {
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+.logo-sub {
+    color: #9099a5;
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+.server-status {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    color: #aeb6c0;
+
+    font-size: 13px;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+
+    border-radius: 50%;
+
+    display: inline-block;
+}
+
+.status-dot.online {
+    background: #35d07f;
+    box-shadow:
+        0 0 8px rgba(53, 208, 127, 0.8);
+}
+
+.status-dot.offline {
+    background: #737b84;
+}
+
+/* -------------------------
+   Main
+------------------------- */
+
+.container {
+    width: min(1120px, 92%);
+    margin: 0 auto;
+
+    padding: 55px 0 30px;
+}
+
+/* -------------------------
+   Hero
+------------------------- */
+
+.hero {
+    min-height: 390px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 55px;
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 145, 0, 0.11),
+            rgba(12, 17, 24, 0.94) 55%
+        );
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.35);
+
+    overflow: hidden;
+
+    position: relative;
+}
+
+.hero::before {
+    content: "";
+
+    position: absolute;
+
+    width: 400px;
+    height: 400px;
+
+    left: -160px;
+    top: -180px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255, 145, 0, 0.18),
+            transparent 70%
+        );
+
+    pointer-events: none;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+
+    max-width: 700px;
+}
+
+.small-title {
+    color: #ff9800;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    letter-spacing: 3px;
+
+    margin-bottom: 15px;
+}
+
+.hero h1 {
+    font-size: clamp(35px, 6vw, 64px);
+
+    line-height: 1.1;
+
+    font-weight: 900;
+
+    margin-bottom: 20px;
+}
+
+.hero p {
+    color: #aeb6c0;
+
+    font-size: 17px;
+
+    line-height: 1.9;
+
+    margin-bottom: 30px;
+}
+
+.hero-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* -------------------------
+   Buttons
+------------------------- */
+
+.primary-button,
+.secondary-button {
+    border: none;
+
+    border-radius: 12px;
+
+    padding: 14px 24px;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        opacity 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.primary-button {
+    color: #111;
+
+    background: #ff9800;
+
+    box-shadow:
+        0 10px 30px rgba(255, 152, 0, 0.2);
+}
+
+.primary-button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 15px 35px rgba(255, 152, 0, 0.3);
+}
+
+.secondary-button {
+    color: #f4f6f8;
+
+    background: rgba(255, 255, 255, 0.06);
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.secondary-button:hover {
+    transform: translateY(-2px);
+
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.primary-button.full {
+    width: 100%;
+    margin-top: 15px;
+}
+
+/* -------------------------
+   Cards
+------------------------- */
+
+.server-card,
+.players-card {
+    margin-top: 22px;
+
+    padding: 28px;
+
+    border-radius: 20px;
+
+    background: rgba(14, 18, 25, 0.82);
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+
+    backdrop-filter: blur(15px);
+}
+
+.card-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 25px;
+}
+
+.card-label {
+    color: #ff9800;
+
+    font-size: 10px;
+    font-weight: 900;
+
+    letter-spacing: 3px;
+}
+
+.card-header h2 {
+    margin-top: 5px;
+
+    font-size: 21px;
+}
+
+/* -------------------------
+   Server badge
+------------------------- */
+
+.server-badge,
+.player-count-badge {
+    padding: 8px 13px;
+
+    border-radius: 9px;
+
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.server-badge.online {
+    color: #65e59b;
+
+    background: rgba(53, 208, 127, 0.1);
+
+    border: 1px solid rgba(53, 208, 127, 0.2);
+}
+
+.server-badge.offline {
+    color: #a7adb4;
+
+    background: rgba(255, 255, 255, 0.05);
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.player-count-badge {
+    color: #ffb44c;
+
+    background: rgba(255, 152, 0, 0.09);
+
+    border: 1px solid rgba(255, 152, 0, 0.16);
+}
+
+/* -------------------------
+   Server information
+------------------------- */
+
+.server-info {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 12px;
+}
+
+.info-box {
+    padding: 20px;
+
+    border-radius: 14px;
+
+    background: rgba(255, 255, 255, 0.035);
+
+    border: 1px solid rgba(255, 255, 255, 0.055);
+}
+
+.info-title {
+    display: block;
+
+    color: #7e8894;
+
+    font-size: 11px;
+
+    margin-bottom: 8px;
+}
+
+.info-box strong {
+    font-size: 15px;
+
+    word-break: break-word;
+}
+
+/* -------------------------
+   Players
+------------------------- */
+
+.players-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.player {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 14px 16px;
+
+    border-radius: 12px;
+
+    background: rgba(255, 255, 255, 0.035);
+
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.player-name {
+    font-weight: 700;
+}
+
+.player-online {
+    color: #55db91;
+
+    font-size: 11px;
+}
+
+.empty-players {
+    color: #77818c;
+
+    text-align: center;
+
+    padding: 30px;
+}
+
+/* -------------------------
+   Modal
+------------------------- */
+
+.modal {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 100;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.7);
+
+    backdrop-filter: blur(8px);
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-box {
+    width: min(420px, 100%);
+
+    padding: 35px;
+
+    border-radius: 20px;
+
+    background: #11161e;
+
+    border: 1px solid rgba(255, 255, 255, 0.09);
+
+    box-shadow:
+        0 30px 100px rgba(0, 0, 0, 0.6);
+
+    position: relative;
+
+    text-align: center;
+}
+
+.close-button {
+    position: absolute;
+
+    top: 12px;
+    left: 15px;
+
+    width: 35px;
+    height: 35px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    color: #aeb6c0;
+
+    background: rgba(255, 255, 255, 0.05);
+
+    font-size: 24px;
+
+    cursor: pointer;
+}
+
+.modal-icon {
+    font-size: 45px;
+
+    margin-bottom: 12px;
+}
+
+.modal-box h2 {
+    margin-bottom: 8px;
+}
+
+.modal-box p {
+    color: #858f9b;
+
+    font-size: 13px;
+
+    margin-bottom: 20px;
+}
+
+.modal-box input {
+    width: 100%;
+
+    padding: 14px 15px;
+
+    border-radius: 11px;
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    outline: none;
+
+    color: white;
+
+    background: rgba(255, 255, 255, 0.05);
+
+    font-size: 14px;
+
+    direction: rtl;
+}
+
+.modal-box input:focus {
+    border-color: rgba(255, 152, 0, 0.6);
+}
+
+.login-message {
+    min-height: 20px;
+
+    margin-top: 12px;
+
+    color: #ff9d9d;
+
+    font-size: 12px;
+}
+
+/* -------------------------
+   Footer
+------------------------- */
+
+footer {
+    width: min(1120px, 92%);
+
+    margin: 0 auto;
+
+    padding: 25px 0 35px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    color: #606b76;
+
+    font-size: 11px;
+}
+
+/* -------------------------
+   Mobile
+------------------------- */
+
+@media (max-width: 800px) {
+
+    .topbar {
+        padding: 15px 4%;
+    }
+
+    .server-status {
+        font-size: 11px;
+    }
+
+    .container {
+        width: 94%;
+
+        padding-top: 25px;
+    }
+
+    .hero {
+        min-height: 330px;
+
+        padding: 32px 25px;
+    }
+
+    .hero h1 {
+        font-size: 38px;
+    }
+
+    .hero p {
+        font-size: 14px;
+    }
+
+    .server-info {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .card-header {
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 500px) {
+
+    .logo-main {
+        font-size: 19px;
+    }
+
+    .logo-sub {
+        font-size: 8px;
+    }
+
+    .server-status {
+        display: none;
+    }
+
+    .hero {
+        border-radius: 18px;
+
+        padding: 28px 20px;
+    }
+
+    .hero h1 {
+        font-size: 32px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+    }
+
+    .primary-button,
+    .secondary-button {
+        width: 100%;
+    }
+
+    .server-card,
+    .players-card {
+        padding: 20px;
+    }
+
+    .server-info {
+        grid-template-columns: 1fr;
+    }
+
+    .card-header {
+        flex-direction: column;
+    }
+
+    footer {
+        flex-direction: column;
+
+        gap: 8px;
+
+        text-align: center;
+    }
+}
