@@ -3,386 +3,306 @@ const API_URL = "";
 let currentUsername =
     localStorage.getItem("mygapino_username") || "";
 
-let heartbeatTimer = null;
+const $ = (id) => document.getElementById(id);
 
 
-// ------------------------------------
-// Elements
-// ------------------------------------
+// =========================
+// API
+// =========================
 
-const statusDot =
-    document.getElementById("statusDot");
+async function apiRequest(url, options = {}) {
+    const response = await fetch(API_URL + url, {
+        ...options,
+        headers: {
+            "Content-Type": "application/json",
+            ...(options.headers || {})
+        }
+    });
 
-const statusText =
-    document.getElementById("statusText");
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+    }
 
-const serverName =
-    document.getElementById("serverName");
-
-const serverBadge =
-    document.getElementById("serverBadge");
-
-const serverStatus =
-    document.getElementById("serverStatus");
-
-const playerCount =
-    document.getElementById("playerCount");
-
-const maxPlayers =
-    document.getElementById("maxPlayers");
-
-const serverIP =
-    document.getElementById("serverIP");
-
-const serverPort =
-    document.getElementById("serverPort");
-
-const playersList =
-    document.getElementById("playersList");
-
-const playersBadge =
-    document.getElementById("playersBadge");
-
-const loginButton =
-    document.getElementById("loginButton");
-
-const refreshButton =
-    document.getElementById("refreshButton");
-
-const loginModal =
-    document.getElementById("loginModal");
-
-const closeModal =
-    document.getElementById("closeModal");
-
-const usernameInput =
-    document.getElementById("usernameInput");
-
-const submitLogin =
-    document.getElementById("submitLogin");
-
-const loginMessage =
-    document.getElementById("loginMessage");
+    return await response.json();
+}
 
 
-// ------------------------------------
-// Server status
-// ------------------------------------
+// =========================
+// Server
+// =========================
 
-async function loadServerStatus() {
+async function loadServer() {
 
     try {
 
-        const response =
-            await fetch("/api/server");
+        const data = await apiRequest("/api/server");
 
-        if (!response.ok) {
-            throw new Error("Server error");
+        if ($("serverName")) {
+            $("serverName").textContent =
+                data.name || "MyGapino My Summer Car";
         }
 
-        const data =
-            await response.json();
-
-        serverName.textContent =
-            data.name ||
-            "MyGapino My Summer Car";
-
-        playerCount.textContent =
-            data.players ?? 0;
-
-        maxPlayers.textContent =
-            data.max_players ?? 32;
-
-        serverIP.textContent =
-            data.ip || "-";
-
-        serverPort.textContent =
-            data.port || "-";
-
-
-        if (data.status === "online") {
-
-            setOnlineStatus();
-
-        } else {
-
-            setOfflineStatus();
-
+        if ($("serverIP")) {
+            $("serverIP").textContent =
+                data.ip || "-";
         }
+
+        if ($("serverPort")) {
+            $("serverPort").textContent =
+                data.port || "-";
+        }
+
+        if ($("playerCount")) {
+            $("playerCount").textContent =
+                data.players ?? 0;
+        }
+
+        if ($("maxPlayers")) {
+            $("maxPlayers").textContent =
+                data.max_players ?? 32;
+        }
+
+
+        // =========================
+        // Real server status
+        // =========================
+
+        const online =
+            data.status === "online";
+
+        if ($("serverStatus")) {
+
+            $("serverStatus").textContent =
+                online
+                    ? "آنلاین"
+                    : "آفلاین";
+        }
+
+
+        if ($("serverBadge")) {
+
+            $("serverBadge").textContent =
+                online
+                    ? "ONLINE"
+                    : "OFFLINE";
+        }
+
+
+        // تغییر ظاهر وضعیت
+        const statusElements = [
+            $("serverStatus"),
+            $("serverBadge")
+        ];
+
+        statusElements.forEach((element) => {
+
+            if (!element) return;
+
+            element.classList.remove(
+                "online",
+                "offline"
+            );
+
+            element.classList.add(
+                online
+                    ? "online"
+                    : "offline"
+            );
+        });
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            "Server request failed:",
+            error
+        );
 
-        setOfflineStatus();
+        if ($("serverStatus")) {
+            $("serverStatus").textContent =
+                "خطا در اتصال";
+        }
+
+        if ($("serverBadge")) {
+            $("serverBadge").textContent =
+                "ERROR";
+        }
     }
 }
 
 
-// ------------------------------------
-// Online
-// ------------------------------------
-
-function setOnlineStatus() {
-
-    statusDot.classList.remove("offline");
-    statusDot.classList.add("online");
-
-    statusText.textContent =
-        "سرور آنلاین است";
-
-    serverBadge.classList.remove("offline");
-    serverBadge.classList.add("online");
-
-    serverBadge.textContent =
-        "ONLINE";
-
-    serverStatus.textContent =
-        "آنلاین";
-}
-
-
-// ------------------------------------
-// Offline
-// ------------------------------------
-
-function setOfflineStatus() {
-
-    statusDot.classList.remove("online");
-    statusDot.classList.add("offline");
-
-    statusText.textContent =
-        "سرور آفلاین است";
-
-    serverBadge.classList.remove("online");
-    serverBadge.classList.add("offline");
-
-    serverBadge.textContent =
-        "OFFLINE";
-
-    serverStatus.textContent =
-        "آفلاین";
-}
-
-
-// ------------------------------------
+// =========================
 // Players
-// ------------------------------------
+// =========================
 
 async function loadPlayers() {
 
     try {
 
-        const response =
-            await fetch("/api/players");
+        const data =
+            await apiRequest("/api/players");
 
-        if (!response.ok) {
-            throw new Error(
-                "Players request failed"
-            );
+        if ($("playerCount")) {
+
+            $("playerCount").textContent =
+                data.count ?? 0;
         }
 
-        const data =
-            await response.json();
 
-        const players =
-            Array.isArray(data.players)
-                ? data.players
-                : [];
+        if (!$("playersList")) {
+            return;
+        }
 
-        playersBadge.textContent =
-            players.length;
 
-        playerCount.textContent =
-            players.length;
+        $("playersList").innerHTML = "";
 
-        renderPlayers(players);
+
+        if (!data.players || data.players.length === 0) {
+
+            const empty =
+                document.createElement("div");
+
+            empty.className = "player-empty";
+
+            empty.textContent =
+                "فعلاً بازیکنی آنلاین نیست.";
+
+            $("playersList").appendChild(empty);
+
+        } else {
+
+            data.players.forEach((player) => {
+
+                const item =
+                    document.createElement("div");
+
+                item.className =
+                    "player-item";
+
+
+                const name =
+                    document.createElement("span");
+
+                name.className =
+                    "player-name";
+
+                name.textContent =
+                    player.username;
+
+
+                const status =
+                    document.createElement("span");
+
+                status.className =
+                    "player-online";
+
+                status.textContent =
+                    "آنلاین";
+
+
+                item.appendChild(name);
+                item.appendChild(status);
+
+                $("playersList").appendChild(item);
+            });
+        }
+
+
+        if ($("playersBadge")) {
+
+            $("playersBadge").textContent =
+                `${data.count ?? 0} بازیکن`;
+        }
 
     } catch (error) {
 
-        console.error(error);
-
-        playersBadge.textContent = "0";
-
-        renderPlayers([]);
+        console.error(
+            "Players request failed:",
+            error
+        );
     }
 }
 
 
-// ------------------------------------
-// Render players
-// ------------------------------------
+// =========================
+// Login Modal
+// =========================
 
-function renderPlayers(players) {
+function openLoginModal() {
 
-    if (!players.length) {
+    if (!$("loginModal")) return;
 
-        playersList.innerHTML = `
-            <div class="empty-players">
-                هنوز بازیکنی آنلاین نیست.
-            </div>
-        `;
+    $("loginModal").classList.add("show");
 
-        return;
+    if ($("usernameInput")) {
+        $("usernameInput").focus();
     }
-
-    playersList.innerHTML = "";
-
-    players.forEach((username) => {
-
-        const playerElement =
-            document.createElement("div");
-
-        playerElement.className =
-            "player";
-
-        playerElement.innerHTML = `
-            <span class="player-name">
-                ${escapeHtml(username)}
-            </span>
-
-            <span class="player-online">
-                ● آنلاین
-            </span>
-        `;
-
-        playersList.appendChild(
-            playerElement
-        );
-    });
 }
-
-
-// ------------------------------------
-// Login modal
-// ------------------------------------
-
-loginButton.addEventListener(
-    "click",
-    () => {
-
-        loginMessage.textContent = "";
-
-        usernameInput.value =
-            currentUsername;
-
-        loginModal.classList.remove(
-            "hidden"
-        );
-
-        setTimeout(
-            () => usernameInput.focus(),
-            100
-        );
-    }
-);
-
-
-closeModal.addEventListener(
-    "click",
-    closeLoginModal
-);
-
-
-loginModal.addEventListener(
-    "click",
-    (event) => {
-
-        if (event.target === loginModal) {
-            closeLoginModal();
-        }
-    }
-);
 
 
 function closeLoginModal() {
 
-    loginModal.classList.add(
-        "hidden"
-    );
+    if (!$("loginModal")) return;
+
+    $("loginModal").classList.remove("show");
 }
 
 
-// ------------------------------------
+// =========================
 // Login
-// ------------------------------------
-
-submitLogin.addEventListener(
-    "click",
-    login
-);
-
-
-usernameInput.addEventListener(
-    "keydown",
-    (event) => {
-
-        if (event.key === "Enter") {
-            login();
-        }
-    }
-);
-
+// =========================
 
 async function login() {
 
+    const input =
+        $("usernameInput");
+
+    const message =
+        $("loginMessage");
+
+    if (!input) return;
+
     const username =
-        usernameInput.value.trim();
+        input.value.trim();
 
 
     if (!username) {
 
-        loginMessage.textContent =
-            "نام کاربری را وارد کنید.";
+        if (message) {
+            message.textContent =
+                "نام کاربری را وارد کنید.";
+        }
 
         return;
     }
 
 
-    if (username.length < 3) {
-
-        loginMessage.textContent =
-            "نام کاربری باید حداقل ۳ کاراکتر باشد.";
-
-        return;
+    if (message) {
+        message.textContent =
+            "در حال ورود...";
     }
-
-
-    submitLogin.disabled = true;
-
-    submitLogin.textContent =
-        "در حال ورود...";
 
 
     try {
 
-        const response =
-            await fetch(
+        const data =
+            await apiRequest(
                 "/api/login",
                 {
                     method: "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
                     body: JSON.stringify({
-                        username: username
+                        username
                     })
                 }
             );
 
 
-        const data =
-            await response.json();
-
-
         if (!data.success) {
 
-            loginMessage.textContent =
-                data.message ||
-                "ورود انجام نشد.";
+            if (message) {
+                message.textContent =
+                    data.message ||
+                    "ورود انجام نشد.";
+            }
 
             return;
         }
@@ -397,9 +317,13 @@ async function login() {
         );
 
 
-        closeLoginModal();
+        if (message) {
+            message.textContent =
+                "ورود موفق بود.";
+        }
 
-        startHeartbeat();
+
+        closeLoginModal();
 
         await sendHeartbeat();
 
@@ -409,22 +333,17 @@ async function login() {
 
         console.error(error);
 
-        loginMessage.textContent =
-            "ارتباط با سرور برقرار نشد.";
-
-    } finally {
-
-        submitLogin.disabled = false;
-
-        submitLogin.textContent =
-            "ورود";
+        if (message) {
+            message.textContent =
+                "خطا در اتصال به سرور.";
+        }
     }
 }
 
 
-// ------------------------------------
+// =========================
 // Heartbeat
-// ------------------------------------
+// =========================
 
 async function sendHeartbeat() {
 
@@ -432,138 +351,222 @@ async function sendHeartbeat() {
         return;
     }
 
-
     try {
 
-        const response =
-            await fetch(
-                "/api/heartbeat",
-                {
-                    method: "POST",
+        await apiRequest(
+            "/api/heartbeat",
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    username:
+                        currentUsername
+                })
+            }
+        );
 
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body: JSON.stringify({
-                        username:
-                            currentUsername
-                    })
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (data.success) {
-
-            playerCount.textContent =
-                data.players;
-
-            playersBadge.textContent =
-                data.players;
-
-            setOnlineStatus();
-
-            await loadPlayers();
-        }
+        await loadPlayers();
 
     } catch (error) {
 
         console.error(
-            "Heartbeat error:",
+            "Heartbeat failed:",
             error
         );
     }
 }
 
 
-// ------------------------------------
-// Start heartbeat
-// ------------------------------------
+// =========================
+// Logout
+// =========================
 
-function startHeartbeat() {
+async function logout() {
 
-    if (heartbeatTimer) {
+    if (!currentUsername) {
+        return;
+    }
 
-        clearInterval(
-            heartbeatTimer
+    try {
+
+        await apiRequest(
+            "/api/logout",
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    username:
+                        currentUsername
+                })
+            }
         );
+
+    } catch (error) {
+
+        console.error(error);
     }
 
 
-    sendHeartbeat();
+    currentUsername = "";
+
+    localStorage.removeItem(
+        "mygapino_username"
+    );
+
+    await loadPlayers();
+}
 
 
-    heartbeatTimer =
+// =========================
+// Refresh
+// =========================
+
+async function refreshAll() {
+
+    await Promise.all([
+        loadServer(),
+        loadPlayers()
+    ]);
+}
+
+
+// =========================
+// Events
+// =========================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        const loginButton =
+            $("loginButton");
+
+        if (loginButton) {
+            loginButton.addEventListener(
+                "click",
+                openLoginModal
+            );
+        }
+
+
+        const closeButton =
+            $("closeModal");
+
+        if (closeButton) {
+            closeButton.addEventListener(
+                "click",
+                closeLoginModal
+            );
+        }
+
+
+        const submitButton =
+            $("submitLogin");
+
+        if (submitButton) {
+            submitButton.addEventListener(
+                "click",
+                login
+            );
+        }
+
+
+        const refreshButton =
+            $("refreshButton");
+
+        if (refreshButton) {
+            refreshButton.addEventListener(
+                "click",
+                refreshAll
+            );
+        }
+
+
+        const input =
+            $("usernameInput");
+
+        if (input) {
+
+            input.addEventListener(
+                "keydown",
+                (event) => {
+
+                    if (event.key === "Enter") {
+                        login();
+                    }
+
+                    if (event.key === "Escape") {
+                        closeLoginModal();
+                    }
+                }
+            );
+        }
+
+
+        const modal =
+            $("loginModal");
+
+        if (modal) {
+
+            modal.addEventListener(
+                "click",
+                (event) => {
+
+                    if (event.target === modal) {
+                        closeLoginModal();
+                    }
+                }
+            );
+        }
+
+
+        // بارگذاری اولیه
+        refreshAll();
+
+
+        // بررسی وضعیت سرور هر 10 ثانیه
+        setInterval(
+            loadServer,
+            10000
+        );
+
+
+        // Heartbeat هر 10 ثانیه
         setInterval(
             sendHeartbeat,
             10000
         );
-}
-
-
-// ------------------------------------
-// Refresh
-// ------------------------------------
-
-refreshButton.addEventListener(
-    "click",
-    async () => {
-
-        refreshButton.disabled = true;
-
-        refreshButton.textContent =
-            "در حال بروزرسانی...";
-
-
-        await loadServerStatus();
-
-        await loadPlayers();
-
-
-        refreshButton.disabled = false;
-
-        refreshButton.textContent =
-            "بروزرسانی وضعیت";
     }
 );
 
 
-// ------------------------------------
-// HTML protection
-// ------------------------------------
+// =========================
+// خروج هنگام بستن صفحه
+// =========================
 
-function escapeHtml(value) {
+window.addEventListener(
+    "beforeunload",
+    () => {
 
-    const div =
-        document.createElement("div");
+        if (!currentUsername) {
+            return;
+        }
 
-    div.textContent = value;
+        const blob =
+            new Blob(
+                [
+                    JSON.stringify({
+                        username:
+                            currentUsername
+                    })
+                ],
+                {
+                    type:
+                        "application/json"
+                }
+            );
 
-    return div.innerHTML;
-}
-
-
-// ------------------------------------
-// Initial
-// ------------------------------------
-
-async function initialize() {
-
-    await loadServerStatus();
-
-    await loadPlayers();
-
-
-    if (currentUsername) {
-
-        startHeartbeat();
+        navigator.sendBeacon(
+            "/api/logout",
+            blob
+        );
     }
-}
-
-
-initialize();
+);
